@@ -1,0 +1,14 @@
+    Para ativar o ambiente virtual:
+
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+ambiente_virtual\Scripts\activate
+
+    Para rodar o django:
+
+python manage.py runserver
+
+    Para copiar o ambiente virtual: (de uma maquina para outra)
+
+pip freeze > requirements.txt (vai criar todas as dependencias do projeto na maquina original num txt)
+pip install -r requirements.txt (depois só usar esse arquivo para baixar as dependencias no outro computador, 
+dentro do outro ambiente virtual, no caso, o ambiente virtual desse outro computador)
