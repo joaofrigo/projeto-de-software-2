@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contate a Gente</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .contact-list {
+            list-style-type: none; /* Remove os marcadores da lista */
+            padding: 0; /* Remove o preenchimento padrão */
+        }
+
+        .contact-item {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        a {
+            text-decoration: none;
+            color: #4CAF50; /* Cor dos links */
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #45a049; /* Cor do link ao passar o mouse */
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #45a049; /* Cor do botão ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Contate a Gente</h1>
+        <ul class="contact-list">
+            <li class="contact-item"><a href="mailto:joaofrigo1@gmail.com">joaofrigo1@gmail.com</a></li>
+            <li class="contact-item"><a href="mailto:avbrites@inf.ufsm.br">avbrites@inf.ufsm.br</a></li>
+            <li class="contact-item"><a href="mailto:Matias.angel.ol27@gmail.com">Matias.angel.ol27@gmail.com</a></li>
+            <li class="contact-item"><a href="mailto:fuyumika.26@gmail.com">fuyumika.26@gmail.com</a></li>
+        </ul>
+        <a href="{% url 'home' %}" class="back-button">Voltar à Página Inicial</a>
+    </div>
+</body>
+</html>

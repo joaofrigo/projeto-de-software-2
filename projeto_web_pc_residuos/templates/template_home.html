@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Espaçamento entre os botões */
+        }
+
+        .button {
+            padding: 15px 30px;
+            background-color: #4CAF50; /* Cor do botão */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049; /* Cor do botão ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>App dos resíduos</h1>
+        <div class="button-container">
+            <a href="contato/" class="button">Contate a gente</a>
+            <a href="{% url 'lista_de_residuos' %}" class="button">Lista de resíduos</a>
+            <a href="{% url 'adicionar_residuo' %}" class="button">Adicionar resíduo</a>
+        </div>
+    </div>
+</body>
+</html>
