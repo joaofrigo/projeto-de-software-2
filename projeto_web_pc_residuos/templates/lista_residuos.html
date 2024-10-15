@@ -3,26 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Resíduos</title>
+    <title>Listar Resíduos (Mock)</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h2 {
             text-align: center;
         }
-
-        h1 {
-            font-size: 2em;
-            color: #333;
+        a {
+            display: inline-block;
+            margin: 10px 0;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>Em Construção</h1>
+
+    <h2>Lista de Resíduos (Mock)</h2>
+    <a href="{% url 'adicionar_residuo' %}">Cadastrar Novo Resíduo</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Data de Geração</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for residuo in residuos %}
+            <tr>
+                <td>{{ residuo.nome }}</td>
+                <td>{{ residuo.data_geracao }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">Nenhum resíduo cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </body>
 </html>
