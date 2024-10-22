@@ -3,7 +3,7 @@
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ambiente_virtual\Scripts\activate
 
-    Para rodar o django:
+    Para rodar o django (esteja dentro da pasta onde o manage.py está):
 
 python manage.py runserver
 
