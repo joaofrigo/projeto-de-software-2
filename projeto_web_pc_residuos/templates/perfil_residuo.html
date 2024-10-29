@@ -6,7 +6,6 @@
     <title>Adicionar Resíduo</title>
     <style>
         body {
-            body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
@@ -41,15 +40,25 @@
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 10px; /* Espaço entre os botões */
         }
-        button:hover {
-            background-color: #45a049;
+        .btn-editar {
+            background-color: #008CBA; /* Azul */
+            color: white;
+        }
+        .btn-editar:hover {
+            background-color: #007B9E; /* Azul escuro */
+        }
+        .btn-deletar {
+            background-color: #f44336; /* Vermelho */
+            color: white;
+        }
+        .btn-deletar:hover {
+            background-color: #d32f2f; /* Vermelho escuro */
         }
 
         .quantidade-container {
@@ -71,11 +80,9 @@
         <label for="tipoResido">Tipo de Resíduo:</label>
         <label for="">Perigoso</label>
         
-
         <label for="nome">Nome</label>
         <label for="">Residuo A</label>
         
-
         <label for="quantidade">Quantidade:</label>
         <div class="quantidade-container">
             <label for="">10 Kg</label>
@@ -84,24 +91,24 @@
         <label for="dataGeracao">Data de Geração:</label>
         <label for="">Out.10.2023</label>
         
-
         <label for="localizacao">Localização:</label>
         <label for="">Mina 1</label>
         
         <label for="metodoDisposicao">Método de Disposição:</label>
         <label for="">Reciclagem</label>
        
-
         <label for="estado">Estado:</label>
         <label for="">Pendente</label>
        
-
         <label for="imagens">Imagens:</label>
         
-
         <label for="observacoes">Observações Adicionais:</label>
         <label for="">XXXXXXXXXXXXXXXXXXXx</label>
-       
+        
+        <div style="text-align: center;">
+            <button type="button" class="btn-editar">Editar</button>
+            <button type="button" class="btn-deletar">Deletar</button>
+        </div>
     </form>
 
 </body>

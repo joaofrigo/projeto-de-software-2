@@ -37,6 +37,35 @@
         a:hover {
             background-color: #45a049;
         }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-visualizar {
+            background-color: #2196F3; /* Azul */
+            color: white;
+        }
+        .btn-visualizar:hover {
+            background-color: #1976D2; /* Azul escuro */
+        }
+        .btn-editar {
+            background-color: #008CBA; /* Azul */
+            color: white;
+            margin-left: 5px;
+        }
+        .btn-editar:hover {
+            background-color: #007B9E; /* Azul escuro */
+        }
+        .btn-deletar {
+            background-color: #f44336; /* Vermelho */
+            color: white;
+            margin-left: 5px;
+        }
+        .btn-deletar:hover {
+            background-color: #d32f2f; /* Vermelho escuro */
+        }
     </style>
 </head>
 <body>
@@ -49,6 +78,9 @@
             <tr>
                 <th>Nome</th>
                 <th>Data de Geração</th>
+                <th>Visualizar</th>
+                <th>Editar</th>
+                <th>Deletar</th>
             </tr>
         </thead>
         <tbody>
@@ -56,10 +88,13 @@
             <tr>
                 <td>{{ residuo.nome }}</td>
                 <td>{{ residuo.data_geracao }}</td>
+                <td><button class="btn-visualizar">Visualizar</button></td>
+                <td><button class="btn-editar">Editar</button></td>
+                <td><button class="btn-deletar">Deletar</button></td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="2">Nenhum resíduo cadastrado.</td>
+                <td colspan="5">Nenhum resíduo cadastrado.</td>
             </tr>
             {% endfor %}
         </tbody>
