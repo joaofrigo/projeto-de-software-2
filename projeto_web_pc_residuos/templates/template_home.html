@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Inicial</title>
     <style>
+        /* Barra lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding-top: 20px;
+        }
+
+        .sidebar .menu-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: 10px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #444;
+        }
+
+        .sidebar .active {
+            background-color: #555;
+        }
+
+        /* Conteúdo principal (div com a classe "container") */
         body {
             display: flex;
             justify-content: center;
@@ -13,6 +55,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
+            padding-left: 250px; /* Espaço para a barra lateral */
         }
 
         .container {
@@ -40,6 +83,16 @@
     </style>
 </head>
 <body>
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <button class="menu-btn" onclick="toggleMenu()">Menu</button>
+        <a href="http://127.0.0.1:8000/" class="active">Home</a>
+        <a href="http://127.0.0.1:8000/adicionar_residuo/" class="active">Adicionar Resíduo</a>
+        <a href="http://127.0.0.1:8000/lista_residuos/" class="active">Lista de Resíduos</a>
+        <a href="http://127.0.0.1:8000/contato/" class="active">Contato</a>
+    </div>
+
+    <!-- Conteúdo Principal -->
     <div class="container">
         <h1>App dos resíduos</h1>
         <div class="button-container">
@@ -49,5 +102,6 @@
             <a href="perfil_residuo/" class="button">Perfil Residuo</a>
         </div>
     </div>
+
 </body>
 </html>

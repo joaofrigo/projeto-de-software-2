@@ -4,27 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Resíduos (Mock)</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            display: flex;
+            min-height: 100vh;
         }
+
+        /* Barra lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding-top: 20px;
+        }
+
+        /* Botão de menu */
+        .sidebar .menu-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: 10px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #444;
+        }
+
+        .sidebar .active {
+            background-color: #555;
+        }
+
+        /* Conteúdo principal (div com a classe "a") */
+        .main-content {
+            margin-left: 250px; /* Espaço para a barra lateral */
+            padding: 20px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
+
         th, td {
             border: 1px solid #ccc;
             padding: 10px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
-        h2 {
-            text-align: center;
-        }
+
         a {
             display: inline-block;
             margin: 10px 0;
@@ -34,71 +101,110 @@
             padding: 10px 15px;
             border-radius: 4px;
         }
+
         a:hover {
             background-color: #45a049;
         }
+
         button {
             padding: 5px 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
+
         .btn-visualizar {
             background-color: #2196F3; /* Azul */
             color: white;
         }
+
         .btn-visualizar:hover {
             background-color: #1976D2; /* Azul escuro */
         }
+
         .btn-editar {
             background-color: #008CBA; /* Azul */
             color: white;
             margin-left: 5px;
         }
+
         .btn-editar:hover {
             background-color: #007B9E; /* Azul escuro */
         }
+
         .btn-deletar {
             background-color: #f44336; /* Vermelho */
             color: white;
             margin-left: 5px;
         }
+
         .btn-deletar:hover {
             background-color: #d32f2f; /* Vermelho escuro */
         }
+
+        
+
     </style>
 </head>
 <body>
 
-    <h2>Lista de Resíduos (Mock)</h2>
-    <a href="{% url 'adicionar_residuo' %}">Cadastrar Novo Resíduo</a>
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <!-- Botão de menu -->
+        <button class="menu-btn" onclick="toggleMenu()">
+            <span class="btn-label">Menu</span>
+        </button>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Data de Geração</th>
-                <th>Visualizar</th>
-                <th>Editar</th>
-                <th>Deletar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for residuo in residuos %}
-            <tr>
-                <td>{{ residuo.nome }}</td>
-                <td>{{ residuo.data_geracao }}</td>
-                <td><button class="btn-visualizar">Visualizar</button></td>
-                <td><button class="btn-editar">Editar</button></td>
-                <td><button class="btn-deletar">Deletar</button></td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">Nenhum resíduo cadastrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- Links da barra lateral -->
+        <a href="http://127.0.0.1:8000/" class="active">
+            <span class="menu-name">Home</span>
+        </a>
+
+        <a href="http://127.0.0.1:8000/adicionar_residuo/" class="active">
+            <span class="menu-name">Adicionar Resíduo</span>
+        </a>
+
+        <a href="http://127.0.0.1:8000/lista_residuos/" class="active">
+            <span class="menu-name">Lista de Resíduos</span>
+        </a>
+
+        <a href="http://127.0.0.1:8000/contato/" class="active">
+            <span class="menu-name">Contato</span>
+        </a>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <h2>Lista de Resíduos (Mock)</h2>
+        <a href="{% url 'adicionar_residuo' %}">Cadastrar Novo Resíduo</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data de Geração</th>
+                    <th>Visualizar</th>
+                    <th>Editar</th>
+                    <th>Deletar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for residuo in residuos %}
+                <tr>
+                    <td>{{ residuo.nome }}</td>
+                    <td>{{ residuo.data_geracao }}</td>
+                    <td><button class="btn-visualizar">Visualizar</button></td>
+                    <td><button class="btn-editar">Editar</button></td>
+                    <td><button class="btn-deletar">Deletar</button></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">Nenhum resíduo cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>
