@@ -1,0 +1,8 @@
+Lista corretamente
+Vai pro perfil corretamente
+Lista e Perfil condizentes
+
+Arrumar o botão de editar nas telas. Só se pode editar no perfil_residuo, permite escrever e tals, depois manda e faz update na table
+Adicionar o botão de delete dos residuos funcional
+Tornar funcional a inserção com todos os valores que aparecem. Precisaremos fazer alguns inserts diferentes para todas as tables
+(já que usamos chaves estrangeiras, conectarmos elas)

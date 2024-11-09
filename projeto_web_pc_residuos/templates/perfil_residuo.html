@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adicionar Resíduo</title>
+    <title>Detalhes do Resíduo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -89,6 +89,7 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            background-color: #f1f1f1; /* Cor de fundo para indicar que não é editável */
         }
 
         button {
@@ -98,17 +99,21 @@
             cursor: pointer;
             margin-right: 10px; /* Espaço entre os botões */
         }
+
         .btn-editar {
             background-color: #008CBA; /* Azul */
             color: white;
         }
+
         .btn-editar:hover {
             background-color: #007B9E; /* Azul escuro */
         }
+
         .btn-deletar {
             background-color: #f44336; /* Vermelho */
             color: white;
         }
+
         .btn-deletar:hover {
             background-color: #d32f2f; /* Vermelho escuro */
         }
@@ -131,42 +136,63 @@
 
     <!-- Conteúdo Principal -->
     <div class="content">
-        <h2>Cadastro de Resíduos</h2>
-        <form action="/submit" method="post" enctype="multipart/form-data">
-            <label for="tipoResido">Tipo de Resíduo:</label>
-            <label for="">Perigoso</label>
-            
-            <label for="nome">Nome</label>
-            <label for="">Residuo A</label>
-            
-            <label for="quantidade">Quantidade:</label>
-            <div class="quantidade-container">
-                <label for="">10 Kg</label>
-            </div>
+        <h2>Detalhes do Resíduo</h2>
+        <form>
+            <!-- Tipo de Resíduo -->
+            <label for="tipo">Tipo de Resíduo:</label>
+            <input type="text" id="tipo" value="{{ residuo.tipo }}" disabled />
 
+            <!-- Quantidade -->
+            <label for="quantidade">Quantidade:</label>
+            <input type="text" id="quantidade" value="{{ residuo.cantidad }} {{ residuo.unidad_medida }}" disabled />
+
+            <!-- Data de Geração -->
             <label for="dataGeracao">Data de Geração:</label>
-            <label for="">Out.10.2023</label>
-            
+            <input type="text" id="dataGeracao" value="{{ residuo.fecha_generacion }}" disabled />
+
+            <!-- Localização -->
             <label for="localizacao">Localização:</label>
-            <label for="">Mina 1</label>
-            
+            <input type="text" id="localizacao" value="{{ residuo.ubicacion_nombre }}" disabled />
+
+            <!-- Coordenadas -->
+            <label for="coordenadas">Coordenadas:</label>
+            <input type="text" id="coordenadas" value="{{ residuo.ubicacion_coordenadas }}" disabled />
+
+            <!-- Capacidade -->
+            <label for="capacidade">Capacidade da Localização:</label>
+            <input type="text" id="capacidade" value="{{ residuo.ubicacion_capacidad }}" disabled />
+
+            <!-- Método de Disposição -->
             <label for="metodoDisposicao">Método de Disposição:</label>
-            <label for="">Reciclagem</label>
-        
+            <input type="text" id="metodoDisposicao" value="{{ residuo.metodo_disposicion }}" disabled />
+
+            <!-- Estado -->
             <label for="estado">Estado:</label>
-            <label for="">Pendente</label>
-        
+            <input type="text" id="estado" value="{{ residuo.estado }}" disabled />
+
+            <!-- Imagens -->
             <label for="imagens">Imagens:</label>
-            
+            <textarea id="imagens" disabled>{{ residuo.imagenes }}</textarea>
+
+            <!-- Observações -->
             <label for="observacoes">Observações Adicionais:</label>
-            <label for="">XXXXXXXXXXXXXXXXXXXx</label>
-            
+            <textarea id="observacoes" disabled>{{ residuo.notas }}</textarea>
+
+            <!-- Informações do Usuário -->
+            <label for="usuarioNome">Usuário Responsável:</label>
+            <input type="text" id="usuarioNome" value="{{ residuo.usuario_nombre }}" disabled />
+
+            <label for="usuarioEmail">Email do Usuário:</label>
+            <input type="email" id="usuarioEmail" value="{{ residuo.usuario_correo }}" disabled />
+
+            <!-- Ações -->
             <div style="text-align: center;">
-                <button type="button" class="btn-editar">Editar</button>
+                <a href="{% url 'adicionar_residuo' %}">
+                    <button type="button" class="btn-editar">Editar</button>
+                </a>
                 <button type="button" class="btn-deletar">Deletar</button>
             </div>
         </form>
     </div>
-
 </body>
 </html>

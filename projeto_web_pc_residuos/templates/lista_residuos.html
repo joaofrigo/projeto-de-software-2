@@ -64,9 +64,9 @@
             background-color: #555;
         }
 
-        /* Conteúdo principal (div com a classe "a") */
+        /* Conteúdo principal */
         .main-content {
-            margin-left: 250px; /* Espaço para a barra lateral */
+            margin-left: 250px;
             padding: 20px;
             width: 100%;
         }
@@ -114,35 +114,33 @@
         }
 
         .btn-visualizar {
-            background-color: #2196F3; /* Azul */
+            background-color: #2196F3;
             color: white;
         }
 
         .btn-visualizar:hover {
-            background-color: #1976D2; /* Azul escuro */
+            background-color: #1976D2;
         }
 
         .btn-editar {
-            background-color: #008CBA; /* Azul */
+            background-color: #008CBA;
             color: white;
             margin-left: 5px;
         }
 
         .btn-editar:hover {
-            background-color: #007B9E; /* Azul escuro */
+            background-color: #007B9E;
         }
 
         .btn-deletar {
-            background-color: #f44336; /* Vermelho */
+            background-color: #f44336;
             color: white;
             margin-left: 5px;
         }
 
         .btn-deletar:hover {
-            background-color: #d32f2f; /* Vermelho escuro */
+            background-color: #d32f2f;
         }
-
-        
 
     </style>
 </head>
@@ -152,13 +150,13 @@
 
     <!-- Conteúdo principal -->
     <div class="main-content">
-        <h2>Lista de Resíduos (Mock)</h2>
+        <h2>Lista de Resíduos</h2>
         <a href="{% url 'adicionar_residuo' %}">Cadastrar Novo Resíduo</a>
 
         <table>
             <thead>
                 <tr>
-                    <th>Nome</th>
+                    <th>ID</th>
                     <th>Data de Geração</th>
                     <th>Visualizar</th>
                     <th>Editar</th>
@@ -166,11 +164,16 @@
                 </tr>
             </thead>
             <tbody>
-                {% for residuo in residuos %}
+                {% for residuo in residuo %}
                 <tr>
-                    <td>{{ residuo.nome }}</td>
-                    <td>{{ residuo.data_geracao }}</td>
-                    <td><button class="btn-visualizar">Visualizar</button></td>
+                    <td>{{ residuo.id_residuos }}</td>
+                    <td>{{ residuo.fecha_generacion }}</td>
+                    <td>
+                        <form method="get" action="{% url 'perfil_residuo' %}">
+                            <input type="hidden" name="id_residuos" value="{{ residuo.id_residuos }}">
+                            <button type="submit" class="btn-visualizar">Visualizar</button>
+                        </form>
+                    </td>
                     <td><button class="btn-editar">Editar</button></td>
                     <td><button class="btn-deletar">Deletar</button></td>
                 </tr>
@@ -182,6 +185,5 @@
             </tbody>
         </table>
     </div>
-
 </body>
 </html>

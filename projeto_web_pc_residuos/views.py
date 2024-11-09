@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import date
+import mysql.connector
 
 
 def index(request):
@@ -16,48 +17,84 @@ def contato_view(request):
     return render(request, 'contato.html')  
 
 def lista_residuos_view(request):
-    # Dados mockados
-    residuos = [
-        {'nome': 'Resíduo A', 'data_geracao': date(2023, 10, 1)},
-        {'nome': 'Resíduo B', 'data_geracao': date(2023, 10, 5)},
-        {'nome': 'Resíduo C', 'data_geracao': date(2023, 10, 10)},
-        {'nome': 'Resíduo D', 'data_geracao': date(2023, 10, 12)},
-        {'nome': 'Resíduo E', 'data_geracao': date(2023, 10, 15)},
-        {'nome': 'Resíduo F', 'data_geracao': date(2023, 10, 18)},
-        {'nome': 'Resíduo G', 'data_geracao': date(2023, 10, 20)},
-        {'nome': 'Resíduo H', 'data_geracao': date(2023, 10, 22)},
-    ]
-    return render(request, 'lista_residuos.html', {'residuos': residuos}) 
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+
+    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários, importante para enviar ao django
+
+    query = """
+    SELECT
+        residuos.id_residuos,
+        residuos.fecha_generacion
+    FROM residuos;
+    """
+    
+    cursor.execute(query)
+    
+    residuo = cursor.fetchall()  # Obter todos os resíduos
+
+    cursor.close()
+    conn.close()
+
+    # Passar os dados do resíduo para o template
+    return render(request, 'lista_residuos.html', {'residuo': residuo})
 
 def adicionar_residuo_view(request):
-    if request.method == 'GET':
-        # Aqui você pode capturar os dados passados na URL, exemplo:
-        tipo_resido = request.GET.get('tipoResido')
-        nome = request.GET.get('nome')
-        quantidade = request.GET.get('quantidade')
-        unidade_medida = request.GET.get('unidad_medida')
-        data_geracao = request.GET.get('dataGeracao')
-        localizacao = request.GET.get('localizacao')
-        metodo_disposicao = request.GET.get('metodoDisposicao')
-        estado = request.GET.get('estado')
-        observacoes = request.GET.get('observacoes')
-
-        # Processar os dados ou armazená-los conforme necessário
-        return render(request, 'adicionar_residuo.html', {
-            'tipo_resido': tipo_resido,
-            'nome': nome,
-            'quantidade': quantidade,
-            'unidade_medida': unidade_medida,
-            'data_geracao': data_geracao,
-            'localizacao': localizacao,
-            'metodo_disposicao': metodo_disposicao,
-            'estado': estado,
-            'observacoes': observacoes
-        })
-    
-    
-        
-    
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+    return render(request, 'adicionar_residuo.html')
 
 def perfil_residuo_view(request):
-    return render(request, 'perfil_residuo.html') 
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+
+    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários, importante para enviar ao django
+
+    
+    residuo_id = request.GET.get('id_residuos')
+
+    query = """
+    SELECT
+        residuos.id_residuos,
+        residuos.tipo,
+        residuos.cantidad,
+        residuos.unidad_medida,
+        residuos.fecha_generacion,
+        residuos.notas,
+        residuos.metodo_disposicion,
+        residuos.estado,
+        residuos.imagenes,
+        usuarios.nombre AS usuario_nombre,
+        usuarios.correo AS usuario_correo,
+        ubicaciones.nombre AS ubicacion_nombre,
+        ubicaciones.coordenadas AS ubicacion_coordenadas,
+        ubicaciones.capacidad AS ubicacion_capacidad
+    FROM residuos
+    JOIN
+        usuarios ON residuos.usuarios_id_usuario = usuarios.id_usuario
+    JOIN
+        ubicaciones ON residuos.ubicaciones_id_ubicaciones = ubicaciones.id_ubicaciones
+    WHERE residuos.id_residuos = %s;
+    """
+    
+    cursor.execute(query, (residuo_id,))
+    
+    residuo = cursor.fetchone()  # Obter o resíduo específico
+
+    cursor.close()
+    conn.close()
+
+    # Passar os dados do resíduo para o template
+    return render(request, 'perfil_residuo.html', {'residuo': residuo})

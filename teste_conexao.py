@@ -1,20 +1,27 @@
 import mysql.connector
 
-print("Conectando...")
+print("Conectando")
 conn = mysql.connector.connect(
     host='34.198.49.207',
     user='root',
     password='Admin12345',
     database='residuos_mineros'
 )
-print("Conectado com sucesso!")
+print("Conectado")
 
 cursor = conn.cursor()
+id_residuo = 1
 string_select = '''
 SELECT * 
-FROM residuos;
+FROM residuos
+WHERE id_residuos = %s;
 '''
-cursor.execute(string_select)
+query = '''
+DESCRIBE residuos;
+'''
+#cursor.execute(string_select, (id_residuo,)) # preciso enviar como uma tupla, por isso a ,
+cursor.execute(query)
+#cursor.execute("SELECT * FROM residuos")
 resultados = cursor.fetchall()
 
 for linha in resultados:
@@ -23,6 +30,19 @@ for linha in resultados:
 cursor.close()
 conn.close()
 print("Conexão encerrada.")
+
+
+'''
+tables totais:
+('disposiciones',)
+('eventos_log',)
+('reportes',)
+('residuos',)
+('ubicaciones',)
+('usuarios',)
+'''
+
+
 
 """
 -- Tabla de usuarios
