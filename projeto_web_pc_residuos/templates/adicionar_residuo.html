@@ -120,35 +120,8 @@
 </head>
 
 <body>
-
-    <div class="sidebar">
-        <!-- Botão de menu -->
-        <button class="menu-btn" onclick="toggleMenu()">
-            <i class='bx bx-menu'></i> <!-- Ícone de três barrinhas -->
-            <span class="btn-label">Menu</span>
-        </button>
-
-        <a href="http://127.0.0.1:8000/" class="active">
-            <i class='bx bxs-home'></i>
-            <span class="menu-name">Home</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/adicionar_residuo/" class="active">
-            <i class='bx bxs-user'></i>
-            <span class="menu-name">Adicionar Resíduo</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/lista_residuos/" class="active">
-            <i class='bx bxs-user-voice'></i>
-            <span class="menu-name">Lista de Resíduos</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/contato/" class="active">
-            <i class='bx bxs-cog'></i>
-            <span class="menu-name">Contato</span>
-        </a>
-
-    </div>
+    <!-- Barra lateral -->
+    {% include 'sidebar.html' %}
 
     <div class="main-content">
         <h2>Cadastro de Resíduos</h2>

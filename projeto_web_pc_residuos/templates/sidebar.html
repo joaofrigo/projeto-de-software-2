@@ -1,0 +1,11 @@
+{% block sidebar %}
+<div class="sidebar">
+    <button class="menu-btn" onclick="toggleMenu()">Menu</button>
+    <a href="{% url 'home' %}" class="active">Home</a>
+    <a href="{% url 'adicionar_residuo' %}" class="active">Adicionar Resíduo</a>
+    <a href="{% url 'lista_de_residuos' %}" class="active">Lista de Resíduos</a>
+    <a href="{% url 'contate_a_gente' %}" class="active">Contato</a>
+    <a href="{% url 'perfil_residuo' %}" class="active">Perfil do Resíduo</a>
+    <a href="{% url 'exemplo' %}" class="active">Exemplo</a>
+</div>
+{% endblock %}

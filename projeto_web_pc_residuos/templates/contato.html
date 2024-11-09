@@ -125,31 +125,8 @@
     </style>
 </head>
 <body>
-
     <!-- Barra lateral -->
-    <div class="sidebar">
-        <!-- Botão de menu -->
-        <button class="menu-btn" onclick="toggleMenu()">
-            <span class="btn-label">Menu</span>
-        </button>
-
-        <!-- Links da barra lateral -->
-        <a href="http://127.0.0.1:8000/" class="active">
-            <span class="menu-name">Home</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/adicionar_residuo/" class="active">
-            <span class="menu-name">Adicionar Resíduo</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/lista_residuos/" class="active">
-            <span class="menu-name">Lista de Resíduos</span>
-        </a>
-
-        <a href="http://127.0.0.1:8000/contato/" class="active">
-            <span class="menu-name">Contato</span>
-        </a>
-    </div>
+    {% include 'sidebar.html' %}
 
     <!-- Conteúdo principal (div com a classe "a") -->
     <div class="a">
