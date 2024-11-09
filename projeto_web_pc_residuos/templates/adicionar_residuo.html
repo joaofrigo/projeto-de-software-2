@@ -125,7 +125,8 @@
 
     <div class="main-content">
         <h2>Cadastro de Resíduos</h2>
-        <form action="/submit" method="post" enctype="multipart/form-data">
+        <!-- Alterando o método do formulário para GET -->
+        <form action="{% url 'adicionar_residuo' %}" method="get">
             <label for="tipoResido">Tipo de Resíduo:</label>
             <select id="tipoResido" name="tipoResido" required>
                 <option value="perigoso">Perigoso</option>
