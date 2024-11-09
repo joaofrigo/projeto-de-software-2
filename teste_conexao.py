@@ -1,19 +1,28 @@
 import mysql.connector
 
-print("conectando")
+print("Conectando...")
 conn = mysql.connector.connect(
     host='34.198.49.207',
     user='root',
     password='Admin12345',
-    database='residuos_mineros',
-    #port = 3306
+    database='residuos_mineros'
 )
-cursor = conn.cursor()
+print("Conectado com sucesso!")
 
-print("conectado")
+cursor = conn.cursor()
+string_select = '''
+SELECT * 
+FROM residuos;
+'''
+cursor.execute(string_select)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
 
 cursor.close()
 conn.close()
+print("Conexão encerrada.")
 
 """
 -- Tabla de usuarios
