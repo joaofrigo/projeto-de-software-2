@@ -10,18 +10,31 @@ conn = mysql.connector.connect(
 print("Conectado")
 
 cursor = conn.cursor()
-id_residuo = 1
-string_select = '''
-SELECT * 
-FROM residuos
-WHERE id_residuos = %s;
-'''
-query = '''
-DESCRIBE residuos;
-'''
-#cursor.execute(string_select, (id_residuo,)) # preciso enviar como uma tupla, por isso a ,
+
+query = 'SELECT * FROM usuarios;'
 cursor.execute(query)
-#cursor.execute("SELECT * FROM residuos")
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
+query = 'DESCRIBE usuarios;'
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
+print("\n")
+query = 'SELECT * FROM residuos;'
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
+query = 'DESCRIBE residuos;'
+cursor.execute(query)
 resultados = cursor.fetchall()
 
 for linha in resultados:

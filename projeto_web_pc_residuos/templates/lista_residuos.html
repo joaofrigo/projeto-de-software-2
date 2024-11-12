@@ -175,7 +175,13 @@
                         </form>
                     </td>
                     <td><button class="btn-editar">Editar</button></td>
-                    <td><button class="btn-deletar">Deletar</button></td>
+                    <td>
+                        <form method="post" action="{% url 'deletar_residuo' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id_residuo" value="{{ residuo.id_residuos }}">
+                            <button type="submit" class="btn-deletar">Deletar</button>
+                        </form>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>

@@ -8,3 +8,5 @@ Adicionar o botão de delete dos residuos funcional, só pegar o ID e deletar
 
 Tornar funcional a inserção com todos os valores que aparecem. Precisaremos fazer alguns inserts diferentes para todas as tables
 (já que usamos chaves estrangeiras, precisamos conectar elas)
+
+Criar um "adicionar localização" para a manter as coordenadas, a capacidade total do local e afins, não ficará no resíduo

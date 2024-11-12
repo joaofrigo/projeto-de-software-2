@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from datetime import date
+from datetime import datetime
 import mysql.connector
 
 
@@ -43,14 +45,50 @@ def lista_residuos_view(request):
     # Passar os dados do resíduo para o template
     return render(request, 'lista_residuos.html', {'residuo': residuo})
 
+# Preciso adicionar um usuario
 def adicionar_residuo_view(request):
-    conn = mysql.connector.connect(
-        host='34.198.49.207',
-        user='root',
-        password='Admin12345',
-        database='residuos_mineros'
-    )
+    if request.method == "POST":
+        tipo_resido = request.POST.get("tipoResido") or None
+        quantidade = request.POST.get("quantidade") or None
+        unidad_medida = request.POST.get("unidad_medida") or None
+        data_geracao = datetime.now() or None
+        metodo_disposicao = request.POST.get("metodoDisposicao") or None
+        estado = request.POST.get("estado") or None
+        imagens = request.FILES.getlist("imagens")
+        observacoes = request.POST.get("observacoes") or None
+        id_usuario = 1  # usuario padrão
+
+        conn = mysql.connector.connect(
+            host='34.198.49.207',
+            user='root',
+            password='Admin12345',
+            database='residuos_mineros'
+        )
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO residuos (tipo, cantidad, unidad_medida, fecha_generacion, notas, metodo_disposicion, estado, usuarios_id_usuario, ubicaciones_id_ubicaciones)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        id_ubicacion = 1  # Example, this should ideally come from another source
+
+        imagem_nome = None
+        if imagens:
+            imagem_nome = imagens[0].name
+    
+
+        values = (tipo_resido, quantidade, unidad_medida, data_geracao, observacoes, metodo_disposicao, estado, id_usuario, id_ubicacion)
+        cursor.execute(sql, values)
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
     return render(request, 'adicionar_residuo.html')
+
+
 
 def perfil_residuo_view(request):
     conn = mysql.connector.connect(
@@ -98,3 +136,23 @@ def perfil_residuo_view(request):
 
     # Passar os dados do resíduo para o template
     return render(request, 'perfil_residuo.html', {'residuo': residuo})
+
+
+def deletar_residuo_view(request):
+    if request.method == 'POST':
+        id_residuo = request.POST.get('id_residuo')
+
+        conn = mysql.connector.connect(
+            host='34.198.49.207',
+            user='root',
+            password='Admin12345',
+            database='residuos_mineros'
+        )
+
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM residuos WHERE id_residuos = %s", (id_residuo,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    return redirect('lista_de_residuos')

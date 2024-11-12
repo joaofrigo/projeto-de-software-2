@@ -10,6 +10,9 @@
             margin: 0;
             display: flex;
             min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; /* Evita a barra de rolagem horizontal */
         }
 
         /* Barra lateral */
@@ -55,9 +58,12 @@
 
         /* Conteúdo principal */
         .content {
-            margin-left: 250px; /* Espaço para a barra lateral */
+            margin-left: 250px;
             padding: 20px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         form {
@@ -89,7 +95,7 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            background-color: #f1f1f1; /* Cor de fundo para indicar que não é editável */
+            background-color: #f1f1f1;
         }
 
         button {
@@ -97,7 +103,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 10px; /* Espaço entre os botões */
+            margin-top: 10px;
         }
 
         .btn-editar {
@@ -118,15 +124,27 @@
             background-color: #d32f2f; /* Vermelho escuro */
         }
 
-        .quantidade-container {
+        /* Botões lado a lado */
+        .button-container {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
         }
 
-        .quantidade-container input,
-        .quantidade-container select {
-            width: 48%; /* Cada campo ocupa quase a metade da linha */
+        .btn-deletar-form {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .btn-editar, .btn-deletar {
+            display: inline-block;
+            margin: 0;
         }
     </style>
 </head>
@@ -151,15 +169,15 @@
             <input type="text" id="dataGeracao" value="{{ residuo.fecha_generacion }}" disabled />
 
             <!-- Localização -->
-            <label for="localizacao">Localização:</label>
+            <label for="localizacao">Localização (atualmente fixo):</label>
             <input type="text" id="localizacao" value="{{ residuo.ubicacion_nombre }}" disabled />
 
             <!-- Coordenadas -->
-            <label for="coordenadas">Coordenadas:</label>
+            <label for="coordenadas">Coordenadas (atualmente fixo):</label>
             <input type="text" id="coordenadas" value="{{ residuo.ubicacion_coordenadas }}" disabled />
 
             <!-- Capacidade -->
-            <label for="capacidade">Capacidade da Localização:</label>
+            <label for="capacidade">Capacidade da Localização (atualmente fixo):</label>
             <input type="text" id="capacidade" value="{{ residuo.ubicacion_capacidad }}" disabled />
 
             <!-- Método de Disposição -->
@@ -179,20 +197,22 @@
             <textarea id="observacoes" disabled>{{ residuo.notas }}</textarea>
 
             <!-- Informações do Usuário -->
-            <label for="usuarioNome">Usuário Responsável:</label>
+            <label for="usuarioNome">Usuário Responsável (atualmente fixo como usuario de ID 1):</label>
             <input type="text" id="usuarioNome" value="{{ residuo.usuario_nombre }}" disabled />
 
-            <label for="usuarioEmail">Email do Usuário:</label>
+            <label for="usuarioEmail">Email do Usuário (atualmente fixo como usuario de ID 1):</label>
             <input type="email" id="usuarioEmail" value="{{ residuo.usuario_correo }}" disabled />
-
-            <!-- Ações -->
-            <div style="text-align: center;">
-                <a href="{% url 'adicionar_residuo' %}">
-                    <button type="button" class="btn-editar">Editar</button>
-                </a>
-                <button type="button" class="btn-deletar">Deletar</button>
-            </div>
         </form>
+
+        <!-- Botões lado a lado -->
+        <div class="button-container">
+            <button type="button" class="btn-editar">Editar</button>
+            <form method="post" action="{% url 'deletar_residuo' %}" class="btn-deletar-form">
+                {% csrf_token %}
+                <input type="hidden" name="id_residuo" value="{{ residuo.id_residuos }}">
+                <button type="submit" class="btn-deletar">Deletar</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
