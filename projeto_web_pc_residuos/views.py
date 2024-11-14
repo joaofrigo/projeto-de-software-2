@@ -43,7 +43,7 @@ def lista_residuos_view(request):
     conn.close()
 
     # Passar os dados do resíduo para o template
-    return render(request, 'lista_de_residuos.html', {'residuo': residuo})
+    return render(request, 'lista_residuos.html', {'residuo': residuo})
 
 # Preciso adicionar um usuario
 def adicionar_residuo_view(request):
@@ -85,7 +85,7 @@ def adicionar_residuo_view(request):
 
         cursor.close()
         conn.close()
-        return redirect('lista_residuos')
+        return redirect('lista_de_residuos')
 
     return render(request, 'adicionar_residuo.html')
 
