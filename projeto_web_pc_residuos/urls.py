@@ -10,5 +10,6 @@ urlpatterns = [
     path('lista_residuos/', lista_residuos_view, name='lista_de_residuos'),
     path('adicionar_residuo/', adicionar_residuo_view, name='adicionar_residuo'), 
     path('perfil_residuo/', perfil_residuo_view, name='perfil_residuo'),
-    path('deletar_residuo/', deletar_residuo_view, name='deletar_residuo'), 
+    path('deletar_residuo/', deletar_residuo_view, name='deletar_residuo'),
+    #path('erro_conexao_mysql', erro_conexao_mysql_view, name='erro_conexao_mysql')
 ]

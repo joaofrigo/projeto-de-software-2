@@ -206,12 +206,12 @@
 
         <!-- Botões lado a lado -->
         <div class="button-container">
-            <button type="button" class="btn-editar">Editar</button>
             <form method="post" action="{% url 'deletar_residuo' %}" class="btn-deletar-form">
                 {% csrf_token %}
                 <input type="hidden" name="id_residuo" value="{{ residuo.id_residuos }}">
                 <button type="submit" class="btn-deletar">Deletar</button>
             </form>
+            <button type="button" class="btn-editar">Editar</button>
         </div>
     </div>
 </body>

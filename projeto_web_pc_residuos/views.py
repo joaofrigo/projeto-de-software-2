@@ -86,7 +86,7 @@ def adicionar_residuo_view(request):
         cursor.close()
         conn.close()
 
-    return render(request, 'adicionar_residuo.html')
+    return render(request, 'lista_residuos.html')
 
 
 
