@@ -157,3 +157,6 @@ def deletar_residuo_view(request):
         conn.close()
 
     return redirect('lista_de_residuos')
+
+def adicionar_local_view(request):
+    return render(request, 'adicionar_local.html')
