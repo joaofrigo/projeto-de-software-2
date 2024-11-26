@@ -71,7 +71,7 @@ def adicionar_residuo_view(request):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
-        id_ubicacion = 1  # Example, this should ideally come from another source
+        id_ubicacion = 1 
 
         imagem_nome = None
         if imagens:
@@ -157,3 +157,50 @@ def deletar_residuo_view(request):
         conn.close()
 
     return redirect('lista_de_residuos')
+
+def adicionar_localizacao_view(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome') or None
+        coordenadas = request.POST.get('coordenadas', '') or None
+        descricao = request.POST.get('descricao', '') or None
+        tipo_localizacao = request.POST.get('tipo_localizacao', '') or None
+        capacidade = request.POST.get('capacidade') or None
+        
+        conn = mysql.connector.connect(
+            host='34.198.49.207',
+            user='root',
+            password='Admin12345',
+            database='residuos_mineros'
+        )
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO ubicaciones (nombre, coordenadas, descripcion, tipo_ubicacion, capacidad)
+            VALUES (%s, %s, %s, %s, %s)
+             """
+        values = (nome, coordenadas, descricao, tipo_localizacao, capacidade)
+        cursor.execute(sql, values)
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect('lista_de_localizacoes')  # Redirecione após salvar
+    return render(request, 'adicionar_localizacao.html')
+
+
+def lista_localizacao_view(request):
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id_ubicaciones, nombre, coordenadas, descripcion, tipo_ubicacion, capacidad FROM ubicaciones")
+    localizacoes = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render(request, 'lista_localizacoes.html', {'localizacoes': localizacoes})

@@ -11,5 +11,7 @@ urlpatterns = [
     path('adicionar_residuo/', adicionar_residuo_view, name='adicionar_residuo'), 
     path('perfil_residuo/', perfil_residuo_view, name='perfil_residuo'),
     path('deletar_residuo/', deletar_residuo_view, name='deletar_residuo'),
+    path('adicionar_localizacao/', adicionar_localizacao_view, name='adicionar_localizacao'),
+    path('lista_localizacao/', lista_localizacao_view, name='lista_de_localizacoes'),
     #path('erro_conexao_mysql', erro_conexao_mysql_view, name='erro_conexao_mysql')
 ]
