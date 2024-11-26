@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from datetime import date
 from datetime import datetime
 import mysql.connector
+import googlemaps
 
 
 def index(request):
@@ -160,3 +161,21 @@ def deletar_residuo_view(request):
 
 def adicionar_local_view(request):
     return render(request, 'adicionar_local.html')
+
+def obter_coordenadas(request):
+    #gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
+
+    #if request.method == "POST":
+        #endereco = request.POST.get('endereco', '')
+
+        #if endereco:
+            #geocode_result = gmaps.geocode(endereco)
+            
+            #if geocode_result:
+                #coordenadas = geocode_result[0]['geometry']['location']
+                #lat = coordenadas['lat']
+                #lng = coordenadas['lng']
+                
+                #return render(request, 'adicionar_local.html', {'lat': lat, 'lng': lng, 'endereco': endereco})
+
+    #return render(request, 'adicionar_local.html')
