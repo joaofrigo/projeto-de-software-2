@@ -11,6 +11,13 @@ print("Conectado")
 
 cursor = conn.cursor()
 
+query = "SHOW TABLES"
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
 query = 'SELECT * FROM usuarios;'
 cursor.execute(query)
 resultados = cursor.fetchall()
@@ -43,6 +50,15 @@ for linha in resultados:
 
 print("\n")
 query = 'DESCRIBE ubicaciones'
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
+
+print("\n")
+query = 'DESCRIBE disposiciones'
 cursor.execute(query)
 resultados = cursor.fetchall()
 

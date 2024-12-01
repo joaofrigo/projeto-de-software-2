@@ -6,6 +6,16 @@ from datetime import datetime
 import mysql.connector
 #import googlemaps
 
+def conexao(user, password):
+    try:
+        return mysql.connector.connect(
+            host='34.198.49.207',
+            user=user,
+            password=password,
+            database='residuos_mineros'
+        )
+    except mysql.connector.Error as e:
+        return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
 
 def index(request):
     return HttpResponse("Olá, mundo. Esta é a página inicial do meu aplicativo.")
@@ -189,19 +199,75 @@ def adicionar_localizacao_view(request):
 
 
 def lista_localizacao_view(request):
-    conn = mysql.connector.connect(
-        host='34.198.49.207',
-        user='root',
-        password='Admin12345',
-        database='residuos_mineros'
-    )
-
+    conn = conexao(user='root', password='Admin12345')
     cursor = conn.cursor()
-
     cursor.execute("SELECT id_ubicaciones, nombre, coordenadas, descripcion, tipo_ubicacion, capacidad FROM ubicaciones")
     localizacoes = cursor.fetchall()
-
     cursor.close()
     conn.close()
-
     return render(request, 'lista_localizacoes.html', {'localizacoes': localizacoes})
+
+def deletar_localizacao_view(request):
+    if request.method == 'POST':
+        id_localizacao = request.POST.get('id')
+
+        conn = conexao(user='root', password='Admin12345')
+        cursor = conn.cursor()
+        
+        sql = "DELETE FROM ubicaciones WHERE id_ubicaciones = %s"
+        cursor.execute(sql, (id_localizacao,))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+    return redirect('lista_de_localizacoes')  
+
+
+def registrar_usuario_view(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+        rol = request.POST.get('rol')
+        fecha_creacion = datetime.now()
+
+        conn = conexao(user='root', password='Admin12345') # usuario padrão por enquanto
+        cursor = conn.cursor()
+        values = (nombre, correo, password, rol, fecha_creacion)
+        sql = """
+             INSERT INTO usuarios (nombre, correo, password, rol, fecha_creacion) 
+             VALUES (%s, %s, %s, %s, %s)
+             """
+        cursor.execute(sql, values)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect('/')
+    else:
+        return render(request, 'registrar_usuario.html')
+    
+def login_view(request):
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+
+        conn = conexao(user='root', password='Admin12345')
+        cursor = conn.cursor()
+        sql = """
+            SELECT * FROM usuarios WHERE correo = %s AND password = %s
+        """
+        values = (correo, password)
+        cursor.execute(sql, values)
+        usuario = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        if usuario:
+            return render(request, 'template_home.html')
+        else:
+            return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
+    else:
+        return render(request, 'login.html')
+    

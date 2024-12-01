@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* Barra lateral */
         .sidebar {
             width: 250px;
             background-color: #333;
@@ -30,7 +29,6 @@
             padding-top: 20px;
         }
 
-        /* Botão de menu */
         .sidebar .menu-btn {
             background-color: #333;
             color: white;
@@ -64,7 +62,6 @@
             background-color: #555;
         }
 
-        /* Conteúdo principal */
         .main-content {
             margin-left: 250px;
             padding: 20px;
@@ -125,10 +122,8 @@
     </style>
 </head>
 <body>
-    <!-- Barra lateral -->
     {% include 'sidebar.html' %}
 
-    <!-- Conteúdo principal -->
     <div class="main-content">
         <h2>Lista de Localizações</h2>
         <a href="{% url 'adicionar_localizacao' %}">Cadastrar Nova Localização</a>
@@ -155,7 +150,11 @@
                     <td>{{ localizacao.4 }}</td>  <!-- Tipo -->
                     <td>{{ localizacao.5 }}</td>  <!-- Capacidade -->
                     <td>
-
+                        <form action="{% url 'deletar_localizacao' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ localizacao.0 }}">
+                            <button type="submit" class="btn-deletar">Deletar</button>
+                        </form>
                     </td>
                 </tr>
                 {% empty %}
