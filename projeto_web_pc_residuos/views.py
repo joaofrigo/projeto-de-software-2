@@ -16,18 +16,6 @@ def conexao(user, password):
         )
     except mysql.connector.Error as e:
         return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
-#import googlemaps
-
-def conexao(user, password):
-    try:
-        return mysql.connector.connect(
-            host='34.198.49.207',
-            user=user,
-            password=password,
-            database='residuos_mineros'
-        )
-    except mysql.connector.Error as e:
-        return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
 
 def index(request):
     return HttpResponse("Olá, mundo. Esta é a página inicial do meu aplicativo.")
