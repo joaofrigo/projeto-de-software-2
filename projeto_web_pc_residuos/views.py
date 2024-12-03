@@ -4,7 +4,18 @@ from django.shortcuts import redirect
 from datetime import date
 from datetime import datetime
 import mysql.connector
+#import googlemaps
 
+def conexao(user, password):
+    try:
+        return mysql.connector.connect(
+            host='34.198.49.207',
+            user=user,
+            password=password,
+            database='residuos_mineros'
+        )
+    except mysql.connector.Error as e:
+        return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
 
 def index(request):
     return HttpResponse("Olá, mundo. Esta é a página inicial do meu aplicativo.")
@@ -71,7 +82,7 @@ def adicionar_residuo_view(request):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
-        id_ubicacion = 1  # Example, this should ideally come from another source
+        id_ubicacion = 1 
 
         imagem_nome = None
         if imagens:
@@ -157,3 +168,178 @@ def deletar_residuo_view(request):
         conn.close()
 
     return redirect('lista_de_residuos')
+
+def editar_residuo_view(request):
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+
+    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários, importante para enviar ao django
+
+    residuo_id = request.GET.get('id_residuos')
+
+    query = """
+    SELECT
+        residuos.id_residuos,
+        residuos.tipo,
+        residuos.cantidad,
+        residuos.unidad_medida,
+        residuos.metodo_disposicion,
+        residuos.estado,
+        residuos.imagenes,
+    FROM residuos
+    JOIN
+        usuarios ON residuos.usuarios_id_usuario = usuarios.id_usuario
+    JOIN
+        ubicaciones ON residuos.ubicaciones_id_ubicaciones = ubicaciones.id_ubicaciones
+    WHERE residuos.id_residuos = %s;
+    """
+
+    cursor.execute(query, (residuo_id,))
+    
+    residuo = cursor.fetchone()  # Obter o resíduo específico
+
+    cursor.close()
+    conn.close()
+
+    # Passar os dados do resíduo para o template
+    return render(request, 'editar_residuo.html', {'residuo': residuo})
+    
+
+import mysql.connector
+import re  # Para usar expressões regulares para extrair coordenadas
+
+import re
+import mysql.connector
+from django.shortcuts import render, redirect
+
+def adicionar_localizacao_view(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome') or None
+        coordenadas = request.POST.get('coordenadas', '') or None
+        descricao = request.POST.get('descricao', '') or None
+        tipo_localizacao = request.POST.get('tipo_localizacao', '') or None
+        capacidade = request.POST.get('capacidade') or None
+        
+        # Extração das coordenadas (latitude e longitude)
+        if coordenadas:
+            # Usando expressão regular para capturar latitude e longitude
+            match = re.match(r"Latitude: (-?\d+\.\d+), Longitude: (-?\d+\.\d+)", coordenadas)
+            if match:
+                latitude = float(match.group(1))
+                longitude = float(match.group(2))
+            else:
+                # Se não encontrar o formato correto, defina latitude e longitude como None
+                latitude, longitude = None, None
+        else:
+            latitude, longitude = None, None
+        
+        # Se latitude e longitude foram extraídos, armazene como string "latitude,longitude"
+        if latitude is not None and longitude is not None:
+            coordenadas = f"{latitude},{longitude}"
+        else:
+            coordenadas = None
+        
+        # Conectando-se ao banco de dados
+        conn = mysql.connector.connect(
+            host='34.198.49.207',
+            user='root',
+            password='Admin12345',
+            database='residuos_mineros'
+        )
+        cursor = conn.cursor()
+
+        # Agora, insira as coordenadas como string no banco de dados
+        sql = """
+            INSERT INTO ubicaciones (nombre, coordenadas, descripcion, tipo_ubicacion, capacidad)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        values = (nome, coordenadas, descricao, tipo_localizacao, capacidade)
+        cursor.execute(sql, values)
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect('lista_de_localizacoes')  # Redirecione após salvar
+    
+    return render(request, 'adicionar_localizacao.html')
+
+
+def lista_localizacao_view(request):
+    conn = conexao(user='root', password='Admin12345')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id_ubicaciones, nombre, coordenadas, descripcion, tipo_ubicacion, capacidad FROM ubicaciones")
+    localizacoes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render(request, 'lista_localizacoes.html', {'localizacoes': localizacoes})
+
+def deletar_localizacao_view(request):
+    if request.method == 'POST':
+        id_localizacao = request.POST.get('id')
+
+        conn = conexao(user='root', password='Admin12345')
+        cursor = conn.cursor()
+        
+        sql = "DELETE FROM ubicaciones WHERE id_ubicaciones = %s"
+        cursor.execute(sql, (id_localizacao,))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+    return redirect('lista_de_localizacoes')  
+
+
+def registrar_usuario_view(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+        rol = request.POST.get('rol')
+        fecha_creacion = datetime.now()
+
+        conn = conexao(user='root', password='Admin12345') # usuario padrão por enquanto
+        cursor = conn.cursor()
+        values = (nombre, correo, password, rol, fecha_creacion)
+        sql = """
+             INSERT INTO usuarios (nombre, correo, password, rol, fecha_creacion) 
+             VALUES (%s, %s, %s, %s, %s)
+             """
+        cursor.execute(sql, values)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect('/')
+    else:
+        return render(request, 'registrar_usuario.html')
+    
+def login_view(request):
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+
+        conn = conexao(user='root', password='Admin12345')
+        cursor = conn.cursor()
+        sql = """
+            SELECT * FROM usuarios WHERE correo = %s AND password = %s
+        """
+        values = (correo, password)
+        cursor.execute(sql, values)
+        usuario = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        if usuario:
+            return render(request, 'template_home.html')
+        else:
+            return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
+    else:
+        return render(request, 'login.html')
+    
+
