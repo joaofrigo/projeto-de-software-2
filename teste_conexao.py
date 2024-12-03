@@ -11,6 +11,13 @@ print("Conectado")
 
 cursor = conn.cursor()
 
+query = "SHOW TABLES"
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
 query = 'SELECT * FROM usuarios;'
 cursor.execute(query)
 resultados = cursor.fetchall()
@@ -33,12 +40,31 @@ resultados = cursor.fetchall()
 for linha in resultados:
     print(linha)
 
+print("\n")
 query = 'DESCRIBE residuos;'
 cursor.execute(query)
 resultados = cursor.fetchall()
 
 for linha in resultados:
     print(linha)
+
+print("\n")
+query = 'DESCRIBE ubicaciones'
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
+
+print("\n")
+query = 'DESCRIBE disposiciones'
+cursor.execute(query)
+resultados = cursor.fetchall()
+
+for linha in resultados:
+    print(linha)
+
 
 cursor.close()
 conn.close()
@@ -140,5 +166,15 @@ CREATE TABLE eventos_log (
 );
 
 
+
+
+
+
+                        <!-- <form method="post" action="{% url 'deletar_localizacao' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ localizacao.id }}">
+                            <button type="submit" class="btn-deletar">Deletar</button>
+                        </form> -->
+                        form do botão de delete de lista_localização
 """
 
