@@ -68,19 +68,19 @@
         <form method="post" action="{% url 'registrar_usuario' %}">
             {% csrf_token %}
             <div>
-                <label for="nombre">Nombre:</label>
+                <label for="nombre">Nome / Nombre:</label>
                 <input type="text" id="nombre" name="nombre" required>
             </div>
             <div>
-                <label for="correo">Correo Electrónico:</label>
+                <label for="correo">Email / Correo Electrónico:</label>
                 <input type="email" id="correo" name="correo" required>
             </div>
             <div>
-                <label for="password">Contraseña:</label>
+                <label for="password">Senha / Contraseña:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <div>
-                <label for="rol">Rol:</label>
+                <label for="rol">Função / Rol:</label>
                 <select id="rol" name="rol" required>
                     <option value="admin">Administrador</option>
                     <option value="admin">Usuario (ainda não implementado)</option>
