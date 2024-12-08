@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '54.234.90.50', '18.206.236.119', '52.90.59.112', '54.144.24.47', '18.232.148.240', '54.173.207.52', '34.229.15.175', '44.223.60.242']
 
+LOGIN_URL = 'login'
 
 # Application definition
 
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'projeto_web_pc_residuos.middlewares.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'projeto_residuos.urls'

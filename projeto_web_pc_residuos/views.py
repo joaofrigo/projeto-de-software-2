@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.shortcuts import redirect
-from datetime import date
 from datetime import datetime
 import mysql.connector
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 #import googlemaps
 
 def conexao(user, password):
@@ -17,18 +18,23 @@ def conexao(user, password):
     except mysql.connector.Error as e:
         return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
 
+@login_required
 def index(request):
     return HttpResponse("Olá, mundo. Esta é a página inicial do meu aplicativo.")
 
+@login_required
 def home_view(request):
     return render(request, 'template_home.html')
 
+@login_required
 def exemplo_view(request):
     return HttpResponse("Essa é a view de exemplo")
 
+@login_required
 def contato_view(request):
     return render(request, 'contato.html')  
 
+@login_required
 def lista_residuos_view(request):
     conn = mysql.connector.connect(
         host='34.198.49.207',
@@ -56,7 +62,7 @@ def lista_residuos_view(request):
     # Passar os dados do resíduo para o template
     return render(request, 'lista_residuos.html', {'residuo': residuo})
 
-# Preciso adicionar um usuario
+@login_required
 def adicionar_residuo_view(request):
     if request.method == "POST":
         tipo_resido = request.POST.get("tipoResido") or None
@@ -102,7 +108,7 @@ def adicionar_residuo_view(request):
     return render(request, 'adicionar_residuo.html')
 
 
-
+@login_required
 def perfil_residuo_view(request):
     conn = mysql.connector.connect(
         host='34.198.49.207',
@@ -150,7 +156,7 @@ def perfil_residuo_view(request):
     # Passar os dados do resíduo para o template
     return render(request, 'perfil_residuo.html', {'residuo': residuo})
 
-
+@login_required
 def deletar_residuo_view(request):
     if request.method == 'POST':
         id_residuo = request.POST.get('id_residuo')
@@ -170,6 +176,7 @@ def deletar_residuo_view(request):
 
     return redirect('lista_de_residuos')
 
+@login_required
 def editar_residuo_view(request):
     conn = mysql.connector.connect(
         host='34.198.49.207',
@@ -208,15 +215,8 @@ def editar_residuo_view(request):
 
     # Passar os dados do resíduo para o template
     return render(request, 'editar_residuo.html', {'residuo': residuo})
-    
 
-import mysql.connector
-import re  # Para usar expressões regulares para extrair coordenadas
-
-import re
-import mysql.connector
-from django.shortcuts import render, redirect
-
+@login_required
 def adicionar_localizacao_view(request):
     if request.method == 'POST':
         nome = request.POST.get('nome') or None
@@ -269,7 +269,7 @@ def adicionar_localizacao_view(request):
     
     return render(request, 'adicionar_localizacao.html')
 
-
+@login_required
 def lista_localizacao_view(request):
     conn = conexao(user='root', password='Admin12345')
     cursor = conn.cursor()
@@ -279,6 +279,7 @@ def lista_localizacao_view(request):
     conn.close()
     return render(request, 'lista_localizacoes.html', {'localizacoes': localizacoes})
 
+@login_required
 def deletar_localizacao_view(request):
     if request.method == 'POST':
         id_localizacao = request.POST.get('id')
@@ -295,7 +296,7 @@ def deletar_localizacao_view(request):
 
     return redirect('lista_de_localizacoes')  
 
-
+@login_required
 def registrar_usuario_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
@@ -319,28 +320,41 @@ def registrar_usuario_view(request):
         return redirect('/')
     else:
         return render(request, 'registrar_usuario.html')
-    
+
+   
 def login_view(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         password = request.POST.get('password')
 
+        # Conexão ao banco de dados usando sua função
         conn = conexao(user='root', password='Admin12345')
         cursor = conn.cursor()
-        sql = """
-            SELECT * FROM usuarios WHERE correo = %s AND password = %s
-        """
-        values = (correo, password)
-        cursor.execute(sql, values)
-        usuario = cursor.fetchall()
-        cursor.close()
-        conn.close()
 
-        if usuario:
-            return render(request, 'template_home.html')
+        try:
+            # Verifica se o usuário existe no banco de dados legado
+            sql = """
+                SELECT correo FROM usuarios WHERE correo = %s AND password = %s
+            """
+            values = (correo, password)
+            cursor.execute(sql, values)
+            usuario = cursor.fetchall()  # Retorna apenas uma linha
+        finally:
+            cursor.close()
+            conn.close()
+
+        if usuario:  # Usuário encontrado
+            correo_db = usuario[0]
+
+            # Verifica se o usuário já existe no modelo Django User
+            user, created = User.objects.get_or_create(username=correo_db)
+
+            # Faz login do usuário no Django
+            login(request, user)
+            return redirect('home')  # Redireciona para a página inicial protegida
         else:
+            # Retorna mensagem de erro caso usuário não exista no banco legado
             return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
     else:
         return render(request, 'login.html')
-    
 
