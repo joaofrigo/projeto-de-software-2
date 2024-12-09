@@ -317,7 +317,7 @@ def registrar_usuario_view(request):
         cursor.close()
         conn.close()
 
-        return redirect('/')
+        return redirect('home')
     else:
         return render(request, 'registrar_usuario.html')
 
