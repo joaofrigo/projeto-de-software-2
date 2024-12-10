@@ -19,5 +19,6 @@ urlpatterns = [
     path('editar_localizacao/', editar_localizacao_view, name='editar_localizacao'),
     path('registrar_usuario/', registrar_usuario_view, name='registrar_usuario'),
     path('', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     #path('erro_conexao_mysql', erro_conexao_mysql_view, name='erro_conexao_mysql')
 ]

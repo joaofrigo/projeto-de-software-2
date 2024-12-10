@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from datetime import date
 from datetime import datetime
 import mysql.connector
+from django.contrib.auth import logout
 #import googlemaps
 
 def conexao(user, password):
@@ -482,3 +483,8 @@ def editar_localizacao_view(request):
 
     return render(request, 'editar_localizacao.html', {'localizacao': localizacao})
 
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
