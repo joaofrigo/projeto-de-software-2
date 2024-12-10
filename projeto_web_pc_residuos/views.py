@@ -355,16 +355,19 @@ def registrar_usuario_view(request):
     else:
         return render(request, 'registrar_usuario.html')
     
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+
 def login_view(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         password = request.POST.get('password')
 
+        # Consulta no banco de dados externo
         conn = conexao(user='root', password='Admin12345')
         cursor = conn.cursor()
-        sql = """
-            SELECT * FROM usuarios WHERE correo = %s AND password = %s
-        """
+        sql = "SELECT * FROM usuarios WHERE correo = %s AND password = %s"
         values = (correo, password)
         cursor.execute(sql, values)
         usuario = cursor.fetchall()
@@ -372,11 +375,25 @@ def login_view(request):
         conn.close()
 
         if usuario:
-            return render(request, 'template_home.html')
+            # Sincroniza com o sistema do Django
+            try:
+                user = User.objects.get(username=correo)
+            except User.DoesNotExist:
+                # Cria o usuário no sistema do Django, se não existir
+                user = User.objects.create_user(username=correo, password=password)
+
+            # Autentica e faz login
+            user = authenticate(username=correo, password=password)
+            if user:
+                login(request, user)  # Cria a sessão do usuário
+                return redirect('home')  # Redireciona para a página home inicial
         else:
+            # Erro de login
             return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
     else:
+        # Exibe o formulário de login
         return render(request, 'login.html')
+
     
     
 def perfil_localizacao_view(request):

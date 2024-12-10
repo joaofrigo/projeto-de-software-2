@@ -125,3 +125,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Usa o banco de dados para armazenar sessões
+SESSION_COOKIE_AGE = 1209600  # Tempo de expiração do cookie de sessão (2 semanas)
+SESSION_SAVE_EVERY_REQUEST = True  # Renova a sessão a cada requisição
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # expire a sessão ao fechar o navegador
+
