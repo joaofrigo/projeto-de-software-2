@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Localização</title>
-    
-    <!-- Adicionando o CSS do Leaflet -->
+    <title>Editar Localização</title>
+    <!-- CSS do Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
         crossorigin=""/>
@@ -59,10 +59,6 @@
             background-color: #444;
         }
 
-        .sidebar .active {
-            background-color: #555;
-        }
-
         /* Conteúdo principal */
         .main-content {
             margin-left: 250px;
@@ -89,7 +85,9 @@
             margin-bottom: 8px;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -117,31 +115,46 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Barra lateral -->
     {% include 'sidebar.html' %}
-    <div class="main-content">
-        <h2>Criar Localização</h2>
-        <form method="post">
-            {% csrf_token %}
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" required>
 
-            <!-- Campo de coordenadas com Leaflet -->
-            <label for="coordenadas">Coordenadas (clique no mapa):</label><br>
-            <div id="map"></div> <!-- O mapa será exibido aqui -->
-            <input type="text" id="coordenadas" name="coordenadas" readonly placeholder="Clique no mapa para selecionar"><br><br>
+    <div class="main-content">
+        <h2>Editar Localização</h2>
+
+        {% if error %}
+            <div style="color: red; text-align: center; margin-bottom: 10px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="{% url 'editar_localizacao' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="id_localizacao" value="{{ localizacao.id_ubicaciones }}">
+
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="{{ localizacao.nombre }}" required>
+
+            <label for="coordenadas">Coordenadas (clique no mapa):</label>
+            <div id="map"></div>
+            <input type="text" id="coordenadas" name="coordenadas" value="{{ localizacao.coordenadas }}" readonly placeholder="Clique no mapa para selecionar"><br><br>
 
             <label for="descricao">Descrição:</label>
-            <input type="text" id="descricao" name="descricao">
+            <input type="text" id="descricao" name="descricao" value="{{ localizacao.descripcion }}">
 
-            <label for="tipo_localizacao">Tipo de Localização:</label>
-            <input type="text" id="tipo_localizacao" name="tipo_localizacao">
+            <label for="tipo_ubicacao">Tipo de Localização:</label>
+            <select id="tipo_ubicacao" name="tipo_ubicacao">
+                <option value="urbana" {% if localizacao.tipo_ubicacion == 'urbana' %}selected{% endif %}>Urbana</option>
+                <option value="rural" {% if localizacao.tipo_ubicacion == 'rural' %}selected{% endif %}>Rural</option>
+                <option value="industrial" {% if localizacao.tipo_ubicacion == 'industrial' %}selected{% endif %}>Industrial</option>
+                <option value="comercial" {% if localizacao.tipo_ubicacion == 'comercial' %}selected{% endif %}>Comercial</option>
+            </select>
 
             <label for="capacidade">Capacidade:</label>
-            <input type="number" id="capacidade" name="capacidade" step="0.01" required>
+            <input type="text" id="capacidade" name="capacidade" value="{{ localizacao.capacidad }}">
 
-            <button type="submit">Cadastrar localização</button>
+            <button type="submit">Atualizar Localização</button>
         </form>
     </div>
 
@@ -152,32 +165,43 @@
 
     <script>
         // Inicializa o mapa
-        var map = L.map('map').setView([-23.55052, -46.633308], 13);  // Localização inicial (São Paulo, por exemplo)
+        var map = L.map('map').setView([-23.55052, -46.633308], 13);
 
-        // Adiciona o tile layer ao mapa
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Variável para armazenar o marcador no mapa
         var marker; 
 
-        // Função para capturar as coordenadas e atualizar o mapa com um marcador ao clicar
-        map.on('click', function(e) {
-            var lat = e.latlng.lat;
-            var lon = e.latlng.lng;
-
-            // Atualiza o campo de coordenadas
+        // Função para capturar as coordenadas ao clicar no mapa
+        function updateCoordinates(lat, lon) {
             document.getElementById('coordenadas').value = 'Latitude: ' + lat.toFixed(6) + ', Longitude: ' + lon.toFixed(6);
 
-            // Remove marcador anterior, se existir
             if (marker) {
                 map.removeLayer(marker);
             }
 
-            // Adiciona um novo marcador no ponto clicado
             marker = L.marker([lat, lon]).addTo(map);
+        }
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            updateCoordinates(lat, lon);
         });
+
+        // Se houver coordenadas iniciais, posiciona no mapa
+        {% if localizacao.coordenadas %}
+            var coords = "{{ localizacao.coordenadas }}".split(',');
+            var lat = parseFloat(coords[0].split(':')[1]);
+            var lon = parseFloat(coords[1].split(':')[1]);
+
+            map.setView([lat, lon], 13);
+            marker = L.marker([lat, lon]).addTo(map);
+            document.getElementById('coordenadas').value = 'Latitude: ' + lat.toFixed(6) + ', Longitude: ' + lon.toFixed(6);
+        {% endif %}
     </script>
 </body>
+
 </html>

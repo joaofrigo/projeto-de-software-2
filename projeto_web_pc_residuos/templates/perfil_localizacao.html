@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Resíduo</title>
+    <title>Detalhes da Localização</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@
         }
 
         form {
-            max-width: 600px;
+            max-width: 800px; /* Aumentei a largura da área para 800px */
             margin: auto;
             padding: 20px;
             border: 1px solid #ccc;
@@ -98,15 +98,6 @@
             background-color: #f1f1f1;
         }
 
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        
         button {
             padding: 10px 15px;
             border: none;
@@ -159,66 +150,38 @@
 
     <!-- Conteúdo Principal -->
     <div class="content">
-        <h2>Detalhes do Resíduo</h2>
+        <h2>Detalhes de Localização</h2>
         <form>
-            <!-- Tipo de Resíduo -->
-            <label for="tipo">Tipo de Resíduo:</label>
-            <input type="text" id="tipo" value="{{ residuo.tipo }}" disabled />
-
-            <!-- Quantidade -->
-            <label for="quantidade">Quantidade:</label>
-            <input type="text" id="quantidade" value="{{ residuo.cantidad }} {{ residuo.unidad_medida }}" disabled />
-
-            <!-- Data de Geração -->
-            <label for="dataGeracao">Data de Geração:</label>
-            <input type="text" id="dataGeracao" value="{{ residuo.fecha_generacion }}" disabled />
-
-            <!-- Localização -->
-            <label for="localizacao">Localização (atualmente fixo):</label>
-            <input type="text" id="localizacao" value="{{ residuo.ubicacion_nombre }}" disabled />
+            <!-- Nome -->
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" value="{{ localizacao.nombre }}" disabled />
 
             <!-- Coordenadas -->
-            <label for="coordenadas">Coordenadas (atualmente fixo):</label>
-            <input type="text" id="coordenadas" value="{{ residuo.ubicacion_coordenadas }}" disabled />
+            <label for="coordenadas">Coordenadas:</label>
+            <input type="text" id="coordenadas" value="{{ localizacao.coordenadas }}" disabled />
+
+            <!-- Descrição -->
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" value="{{ localizacao.descripcion }}" disabled />
+
+            <!-- Tipo Localização -->
+            <label for="tipo_localizacao">Tipo Localização:</label>
+            <input type="text" id="tipo_localizacao" value="{{ localizacao.tipo_ubicacion }}" disabled />
 
             <!-- Capacidade -->
-            <label for="capacidade">Capacidade da Localização (atualmente fixo):</label>
-            <input type="text" id="capacidade" value="{{ residuo.ubicacion_capacidad }}" disabled />
-
-            <!-- Método de Disposição -->
-            <label for="metodoDisposicao">Método de Disposição:</label>
-            <input type="text" id="metodoDisposicao" value="{{ residuo.metodo_disposicion }}" disabled />
-
-            <!-- Estado -->
-            <label for="estado">Estado:</label>
-            <input type="text" id="estado" value="{{ residuo.estado }}" disabled />
-
-            <!-- Imagens -->
-            <label for="imagens">Imagens:</label>
-            <textarea id="imagens" disabled>{{ residuo.imagenes }}</textarea>
-
-            <!-- Observações -->
-            <label for="observacoes">Observações Adicionais:</label>
-            <textarea id="observacoes" disabled>{{ residuo.notas }}</textarea>
-
-            <!-- Informações do Usuário -->
-            <label for="usuarioNome">Usuário Responsável (atualmente fixo como usuario de ID 1):</label>
-            <input type="text" id="usuarioNome" value="{{ residuo.usuario_nombre }}" disabled />
-
-            <label for="usuarioEmail">Email do Usuário (atualmente fixo como usuario de ID 1):</label>
-            <input type="email" id="usuarioEmail" value="{{ residuo.usuario_correo }}" disabled />
+            <label for="capacidade">Capacidade:</label>
+            <input type="text" id="capacidade" value="{{ localizacao.capacidad }}" disabled />
         </form>
 
         <!-- Botões lado a lado -->
         <div class="button-container">
-            <form method="post" action="{% url 'deletar_residuo' %}" class="btn-deletar-form">
+            <form method="post" action="{% url 'deletar_localizacao' %}" class="btn-deletar-form">
                 {% csrf_token %}
-                <input type="hidden" name="id_residuo" value="{{ residuo.id_residuos }}">
+                <input type="hidden" name="id" value="{{ localizacao.id_ubicaciones }}">
                 <button type="submit" class="btn-deletar">Deletar</button>
             </form>
-            <form method="post" action="{% url 'editar_residuo' %}" class="btn-editar-form">
-                {% csrf_token %}
-                <input type="hidden" name="id_residuo" value="{{ residuo.id_residuos }}">
+            <form method="get" action="{% url 'editar_localizacao' %}" class="btn-editar-form">
+                <input type="hidden" name="id_localizacao" value="{{ localizacao.id_ubicaciones }}">
                 <button type="submit" class="btn-editar">Editar</button>
             </form>
         </div>

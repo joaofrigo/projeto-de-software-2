@@ -18,6 +18,7 @@
             min-height: 100vh;
         }
 
+        /* Barra lateral */
         .sidebar {
             width: 250px;
             background-color: #333;
@@ -29,6 +30,7 @@
             padding-top: 20px;
         }
 
+        /* Botão de menu */
         .sidebar .menu-btn {
             background-color: #333;
             color: white;
@@ -62,6 +64,7 @@
             background-color: #555;
         }
 
+        /* Conteúdo principal */
         .main-content {
             margin-left: 250px;
             padding: 20px;
@@ -110,6 +113,25 @@
             cursor: pointer;
         }
 
+        .btn-visualizar {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-visualizar:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-editar {
+            background-color: #008CBA;
+            color: white;
+            margin-left: 5px;
+        }
+
+        .btn-editar:hover {
+            background-color: #007B9E;
+        }
+
         .btn-deletar {
             background-color: #f44336;
             color: white;
@@ -119,6 +141,7 @@
         .btn-deletar:hover {
             background-color: #d32f2f;
         }
+
     </style>
 </head>
 <body>
@@ -133,10 +156,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Coordenadas</th>
-                    <th>Descrição</th>
-                    <th>Tipo</th>
-                    <th>Capacidade</th>
+                    <th>Vizualizar</th>
                     <th>Deletar</th>
                 </tr>
             </thead>
@@ -145,10 +165,13 @@
                 <tr>
                     <td>{{ localizacao.0 }}</td>  <!-- ID -->
                     <td>{{ localizacao.1 }}</td>  <!-- Nome -->
-                    <td>{{ localizacao.2 }}</td>  <!-- Coordenadas -->
-                    <td>{{ localizacao.3 }}</td>  <!-- Descrição -->
-                    <td>{{ localizacao.4 }}</td>  <!-- Tipo -->
-                    <td>{{ localizacao.5 }}</td>  <!-- Capacidade -->
+                    <td>
+                        <form method="get" action="{% url 'perfil_localizacao' %}" style="display:inline;">
+            
+                            <input type="hidden" name="id" value="{{ localizacao.0 }}">
+                            <button type="submit" class="btn-visualizar">Visualizar</button>
+                        </form>
+                    </td>
                     <td>
                         <form action="{% url 'deletar_localizacao' %}" method="post" style="display:inline;">
                             {% csrf_token %}

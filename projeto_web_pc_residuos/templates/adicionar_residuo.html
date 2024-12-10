@@ -159,6 +159,14 @@
                 <option value="em_processo">Em Processo</option>
                 <option value="concluido">Concluído</option>
             </select>
+
+            <!-- Campo para selecionar localização -->
+            <label for="localizacao">Localização:</label>
+            <select id="localizacao" name="localizacao" required>
+                {% for local in localizacoes %}
+                    <option value="{{ local.id_ubicaciones }}">{{ local.nombre }}</option>
+                {% endfor %}
+            </select>
         
             <label for="imagens">Imagens:</label>
             <input type="file" id="imagens" name="imagens" accept="image/*" multiple>
