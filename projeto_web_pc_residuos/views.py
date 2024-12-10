@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import redirect
+from datetime import date
 from datetime import datetime
 import mysql.connector
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 #import googlemaps
 
 def conexao(user, password):
@@ -18,23 +17,18 @@ def conexao(user, password):
     except mysql.connector.Error as e:
         return HttpResponse(f"Erro na conexão com o banco de dados: {e}", status=500)
 
-@login_required
 def index(request):
     return HttpResponse("Olá, mundo. Esta é a página inicial do meu aplicativo.")
 
-@login_required
 def home_view(request):
     return render(request, 'template_home.html')
 
-@login_required
 def exemplo_view(request):
     return HttpResponse("Essa é a view de exemplo")
 
-@login_required
 def contato_view(request):
     return render(request, 'contato.html')  
 
-@login_required
 def lista_residuos_view(request):
     conn = mysql.connector.connect(
         host='34.198.49.207',
@@ -62,18 +56,33 @@ def lista_residuos_view(request):
     # Passar os dados do resíduo para o template
     return render(request, 'lista_residuos.html', {'residuo': residuo})
 
-@login_required
+# Preciso adicionar um usuario
 def adicionar_residuo_view(request):
+    # Carrega todas as localizações para popular o formulário
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT id_ubicaciones, nombre FROM ubicaciones")
+    localizacoes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
     if request.method == "POST":
+        # Captura de dados do formulário
         tipo_resido = request.POST.get("tipoResido") or None
         quantidade = request.POST.get("quantidade") or None
         unidad_medida = request.POST.get("unidad_medida") or None
         data_geracao = datetime.now() or None
         metodo_disposicao = request.POST.get("metodoDisposicao") or None
         estado = request.POST.get("estado") or None
-        imagens = request.FILES.getlist("imagens")
         observacoes = request.POST.get("observacoes") or None
-        id_usuario = 1  # usuario padrão
+        id_localizacao = request.POST.get("localizacao") or None  # Captura o ID da localização selecionada
+        id_usuario = 1  # usuário padrão
 
         conn = mysql.connector.connect(
             host='34.198.49.207',
@@ -87,28 +96,19 @@ def adicionar_residuo_view(request):
             INSERT INTO residuos (tipo, cantidad, unidad_medida, fecha_generacion, notas, metodo_disposicion, estado, usuarios_id_usuario, ubicaciones_id_ubicaciones)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
+        values = (tipo_resido, quantidade, unidad_medida, data_geracao, observacoes, metodo_disposicao, estado, id_usuario, id_localizacao)
 
-        id_ubicacion = 1 
-        id_ubicacion = 1 
-
-        imagem_nome = None
-        if imagens:
-            imagem_nome = imagens[0].name
-    
-
-        values = (tipo_resido, quantidade, unidad_medida, data_geracao, observacoes, metodo_disposicao, estado, id_usuario, id_ubicacion)
         cursor.execute(sql, values)
-
         conn.commit()
-
         cursor.close()
         conn.close()
         return redirect('lista_de_residuos')
 
-    return render(request, 'adicionar_residuo.html')
+    # Caso não seja POST, renderize o formulário com as localizações
+    return render(request, 'adicionar_residuo.html', {'localizacoes': localizacoes})
 
 
-@login_required
+
 def perfil_residuo_view(request):
     conn = mysql.connector.connect(
         host='34.198.49.207',
@@ -156,7 +156,7 @@ def perfil_residuo_view(request):
     # Passar os dados do resíduo para o template
     return render(request, 'perfil_residuo.html', {'residuo': residuo})
 
-@login_required
+
 def deletar_residuo_view(request):
     if request.method == 'POST':
         id_residuo = request.POST.get('id_residuo')
@@ -176,47 +176,82 @@ def deletar_residuo_view(request):
 
     return redirect('lista_de_residuos')
 
-@login_required
+# View para processar e atualizar os dados no banco
 def editar_residuo_view(request):
+    # Conexão com o banco de dados
     conn = mysql.connector.connect(
         host='34.198.49.207',
         user='root',
         password='Admin12345',
         database='residuos_mineros'
     )
+    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários
 
-    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários, importante para enviar ao django
+    # Captura o ID do resíduo
+    id_residuo = request.POST.get('id_residuo') or request.GET.get('id_residuo')
 
-    residuo_id = request.GET.get('id_residuos')
+    if request.method == "POST":
+        # Captura de dados do formulário
+        tipo_resido = request.POST.get("tipoResido")
+        quantidade = request.POST.get("quantidade")
+        unidad_medida = request.POST.get("unidad_medida")
+        metodo_disposicao = request.POST.get("metodoDisposicao")
+        estado = request.POST.get("estado")
+        observacoes = request.POST.get("observacoes")
+        id_localizacao = request.POST.get("localizacao")  # Captura o ID da localização selecionada no formulário
 
-    query = """
-    SELECT
-        residuos.id_residuos,
-        residuos.tipo,
-        residuos.cantidad,
-        residuos.unidad_medida,
-        residuos.metodo_disposicion,
-        residuos.estado,
-        residuos.imagenes,
-    FROM residuos
-    JOIN
-        usuarios ON residuos.usuarios_id_usuario = usuarios.id_usuario
-    JOIN
-        ubicaciones ON residuos.ubicaciones_id_ubicaciones = ubicaciones.id_ubicaciones
-    WHERE residuos.id_residuos = %s;
-    """
+        # Atualiza dados no banco
+        try:
+            sql = """
+            UPDATE residuos 
+            SET tipo = %s, cantidad = %s, unidad_medida = %s, metodo_disposicion = %s, estado = %s, notas = %s, ubicaciones_id_ubicaciones = %s
+            WHERE id_residuos = %s
+            """
+            values = (tipo_resido, quantidade, unidad_medida, metodo_disposicao, estado, observacoes, id_localizacao, id_residuo)
 
-    cursor.execute(query, (residuo_id,))
+            cursor.execute(sql, values)
+            conn.commit()
+            
+            cursor.close()
+            conn.close()
+            return redirect('lista_de_residuos')  # Redirecionar após sucesso
+        except Exception as e:
+            print("Erro ao atualizar dados:", e)
     
-    residuo = cursor.fetchone()  # Obter o resíduo específico
+    # Se for método GET, carrega os dados do resíduo para preencher o formulário
+    sql_select = """
+    SELECT 
+        residuos.id_residuos, residuos.tipo, residuos.cantidad, residuos.unidad_medida, residuos.metodo_disposicion,
+        residuos.estado, residuos.notas, residuos.ubicaciones_id_ubicaciones
+    FROM residuos
+    WHERE id_residuos = %s
+    """
+    cursor.execute(sql_select, (id_residuo,))
+    residuo = cursor.fetchone()
+    
+    if not residuo:
+        cursor.close()
+        conn.close()
+        return redirect('lista_de_residuos')  # Redireciona caso o resíduo não exista
+
+    # Carrega todas as localizações do banco para popular no formulário
+    cursor.execute("SELECT id_ubicaciones, nombre FROM ubicaciones")
+    localizacoes = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    # Passar os dados do resíduo para o template
-    return render(request, 'editar_residuo.html', {'residuo': residuo})
+    return render(request, 'editar_residuo.html', {'residuo': residuo, 'localizacoes': localizacoes})
 
-@login_required
+    
+
+import mysql.connector
+import re  # Para usar expressões regulares para extrair coordenadas
+
+import re
+import mysql.connector
+from django.shortcuts import render, redirect
+
 def adicionar_localizacao_view(request):
     if request.method == 'POST':
         nome = request.POST.get('nome') or None
@@ -269,7 +304,7 @@ def adicionar_localizacao_view(request):
     
     return render(request, 'adicionar_localizacao.html')
 
-@login_required
+
 def lista_localizacao_view(request):
     conn = conexao(user='root', password='Admin12345')
     cursor = conn.cursor()
@@ -279,7 +314,6 @@ def lista_localizacao_view(request):
     conn.close()
     return render(request, 'lista_localizacoes.html', {'localizacoes': localizacoes})
 
-@login_required
 def deletar_localizacao_view(request):
     if request.method == 'POST':
         id_localizacao = request.POST.get('id')
@@ -296,7 +330,7 @@ def deletar_localizacao_view(request):
 
     return redirect('lista_de_localizacoes')  
 
-@login_required
+
 def registrar_usuario_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
@@ -317,44 +351,117 @@ def registrar_usuario_view(request):
         cursor.close()
         conn.close()
 
-        return redirect('home')
+        return redirect('/')
     else:
         return render(request, 'registrar_usuario.html')
-
-   
+    
 def login_view(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         password = request.POST.get('password')
 
-        # Conexão ao banco de dados usando sua função
         conn = conexao(user='root', password='Admin12345')
         cursor = conn.cursor()
+        sql = """
+            SELECT * FROM usuarios WHERE correo = %s AND password = %s
+        """
+        values = (correo, password)
+        cursor.execute(sql, values)
+        usuario = cursor.fetchall()
+        cursor.close()
+        conn.close()
 
-        try:
-            # Verifica se o usuário existe no banco de dados legado
-            sql = """
-                SELECT correo FROM usuarios WHERE correo = %s AND password = %s
-            """
-            values = (correo, password)
-            cursor.execute(sql, values)
-            usuario = cursor.fetchall()  # Retorna apenas uma linha
-        finally:
-            cursor.close()
-            conn.close()
-
-        if usuario:  # Usuário encontrado
-            correo_db = usuario[0]
-
-            # Verifica se o usuário já existe no modelo Django User
-            user, created = User.objects.get_or_create(username=correo_db)
-
-            # Faz login do usuário no Django
-            login(request, user)
-            return redirect('home')  # Redireciona para a página inicial protegida
+        if usuario:
+            return render(request, 'template_home.html')
         else:
-            # Retorna mensagem de erro caso usuário não exista no banco legado
             return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
     else:
-        return render(request, 'login.html')
+        return render(request, 'template_home.html')
+    
+    
+def perfil_localizacao_view(request):
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+
+    cursor = conn.cursor(dictionary=True)  # Retorna resultados como dicionários, importante para enviar ao django
+
+    
+    localizacao_id = request.GET.get('id')
+    print("ID capturado:", localizacao_id)
+
+    query = """
+    SELECT
+        ubicaciones.id_ubicaciones,
+        ubicaciones.nombre,
+        ubicaciones.coordenadas,
+        ubicaciones.descripcion,
+        ubicaciones.tipo_ubicacion,
+        ubicaciones.capacidad
+    FROM ubicaciones
+    WHERE ubicaciones.id_ubicaciones = %s;
+    """
+    
+    cursor.execute(query, (localizacao_id,))
+    
+    localizacao = cursor.fetchone()  # Obter o locazicao específico
+
+    cursor.close()
+    conn.close()
+
+    # Passar os dados do localizacao para o template
+    print(localizacao)
+    return render(request, 'perfil_localizacao.html', {'localizacao': localizacao})
+    
+    
+def editar_localizacao_view(request):
+    # Conexão com o banco de dados
+    conn = mysql.connector.connect(
+        host='34.198.49.207',
+        user='root',
+        password='Admin12345',
+        database='residuos_mineros'
+    )
+    cursor = conn.cursor(dictionary=True)
+
+    # Capturando o ID da localização da requisição
+    id_localizacao = request.POST.get('id_localizacao') or request.GET.get('id_localizacao')
+
+    if request.method == "POST":
+        # Capturando dados do formulário
+        nome = request.POST.get('nome')
+        coordenadas = request.POST.get('coordenadas')
+        descricao = request.POST.get('descricao')
+        tipo_localizacao = request.POST.get('tipo_localizacao')
+        capacidade = request.POST.get('capacidade')
+
+        try:
+            # Atualizando os dados no banco
+            sql = """
+                UPDATE ubicaciones 
+                SET nombre = %s, coordenadas = %s, descripcion = %s, tipo_ubicacion = %s, capacidad = %s
+                WHERE id_ubicaciones = %s
+            """
+            values = (nome, coordenadas, descricao, tipo_localizacao, capacidade, id_localizacao)
+            cursor.execute(sql, values)
+            conn.commit()
+            return redirect('lista_de_localizacoes')
+        except Exception as e:
+            print("Erro ao atualizar localização:", e)
+
+    # Se for método GET ou falha no POST, carregamos os dados existentes
+    sql_select = "SELECT * FROM ubicaciones WHERE id_ubicaciones = %s"
+    cursor.execute(sql_select, (id_localizacao,))
+    localizacao = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if not localizacao:
+        return redirect('lista_de_localizacoes')
+
+    return render(request, 'editar_localizacao.html', {'localizacao': localizacao})
 
