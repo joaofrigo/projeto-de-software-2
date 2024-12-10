@@ -376,7 +376,7 @@ def login_view(request):
         else:
             return render(request, 'login.html', {'error_message': 'El correo o la contraseña son incorrectos. / O email ou a senha estão incorretos'})
     else:
-        return render(request, 'template_home.html')
+        return render(request, 'login.html')
     
     
 def perfil_localizacao_view(request):
