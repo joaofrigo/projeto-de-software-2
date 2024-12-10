@@ -174,15 +174,15 @@
             <input type="text" id="dataGeracao" value="{{ residuo.fecha_generacion }}" disabled />
 
             <!-- Localização -->
-            <label for="localizacao">Localização (atualmente fixo):</label>
+            <label for="localizacao">Localização:</label>
             <input type="text" id="localizacao" value="{{ residuo.ubicacion_nombre }}" disabled />
 
             <!-- Coordenadas -->
-            <label for="coordenadas">Coordenadas (atualmente fixo):</label>
+            <label for="coordenadas">Coordenadas:</label>
             <input type="text" id="coordenadas" value="{{ residuo.ubicacion_coordenadas }}" disabled />
 
             <!-- Capacidade -->
-            <label for="capacidade">Capacidade da Localização (atualmente fixo):</label>
+            <label for="capacidade">Capacidade da Localização:</label>
             <input type="text" id="capacidade" value="{{ residuo.ubicacion_capacidad }}" disabled />
 
             <!-- Método de Disposição -->
@@ -193,20 +193,22 @@
             <label for="estado">Estado:</label>
             <input type="text" id="estado" value="{{ residuo.estado }}" disabled />
 
-            <!-- Imagens -->
+            <!-- Imagens 
             <label for="imagens">Imagens:</label>
             <textarea id="imagens" disabled>{{ residuo.imagenes }}</textarea>
+            -->
 
             <!-- Observações -->
             <label for="observacoes">Observações Adicionais:</label>
             <textarea id="observacoes" disabled>{{ residuo.notas }}</textarea>
 
-            <!-- Informações do Usuário -->
+            <!-- Informações do Usuário 
             <label for="usuarioNome">Usuário Responsável (atualmente fixo como usuario de ID 1):</label>
             <input type="text" id="usuarioNome" value="{{ residuo.usuario_nombre }}" disabled />
 
             <label for="usuarioEmail">Email do Usuário (atualmente fixo como usuario de ID 1):</label>
             <input type="email" id="usuarioEmail" value="{{ residuo.usuario_correo }}" disabled />
+            -->
         </form>
 
         <!-- Botões lado a lado -->

@@ -136,7 +136,12 @@
             <input type="text" id="descricao" name="descricao">
 
             <label for="tipo_localizacao">Tipo de Localização:</label>
-            <input type="text" id="tipo_localizacao" name="tipo_localizacao">
+            <select id="tipo_localizacao" name="tipo_localizacao">
+                <option value="urbana" {% if localizacao.tipo_ubicacion == 'urbana' %}selected{% endif %}>Urbana</option>
+                <option value="rural" {% if localizacao.tipo_ubicacion == 'rural' %}selected{% endif %}>Rural</option>
+                <option value="industrial" {% if localizacao.tipo_ubicacion == 'industrial' %}selected{% endif %}>Industrial</option>
+                <option value="comercial" {% if localizacao.tipo_ubicacion == 'comercial' %}selected{% endif %}>Comercial</option>
+            </select>
 
             <label for="capacidade">Capacidade:</label>
             <input type="number" id="capacidade" name="capacidade" step="0.01" required>
